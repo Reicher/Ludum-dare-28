@@ -24,10 +24,9 @@ public:
 
 private:
 	void updateBackground(sf::Time dt);
-	void drawInfoScreen(sf::RenderWindow* window);
+	void updateMoney(sf::Time dt);
 
 	std::list<sf::Sprite> m_scrollingBackground;
-
 
 	sf::Sprite m_background1;
 	sf::Sprite m_background2;

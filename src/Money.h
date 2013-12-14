@@ -21,6 +21,8 @@ public:
 	void draw(sf::RenderWindow* window);
 	void update(sf::Time dt);
 
+	bool isDead() const;
+
 private:
 	Content* m_pContent;
 
@@ -31,4 +33,5 @@ private:
 	Position m_position;
 	Player* m_pPlayer;
 	double m_speed;
+	bool m_dead;
 };

@@ -49,22 +49,8 @@ void Level::update(sf::Time dt)
 	if (m_levelClock.getElapsedTime() >= m_levelTime)
 		m_ended = true;
 
-	// Adding enemies, money and stuff
-	if(m_timeSinceLastMoney.getElapsedTime() > m_nextMoney)
-	{
-		Position pos = static_cast<Position>(rand() % 2 + 0);
-		unsigned int value = rand() % 1000 + 100;
-		m_money.push_back(new Money( m_pContent, value, pos, m_pPlayer, m_levelSpeed));
-		m_timeSinceLastMoney.restart();
-		m_nextMoney = sf::seconds(rand() % 5);
-	}
-
-	for(Money* cash : m_money)
-	{
-		cash->update(dt);
-	}
-
 	updateBackground(dt);
+	updateMoney(dt);
 }
 
 bool Level::isStarted() const
@@ -113,6 +99,30 @@ void Level::updateBackground(sf::Time dt)
 	if(m_scrollingBackground.begin()->getPosition().x < -800)
 		m_scrollingBackground.pop_front();
 
+}
+
+bool isDead (Money* m) { return m->isDead(); }
+
+void Level::updateMoney(sf::Time dt)
+{
+	// Adding enemies, money and stuff
+	if(m_timeSinceLastMoney.getElapsedTime() > m_nextMoney)
+	{
+		Position pos = static_cast<Position>(rand() % 3 + 0);
+		unsigned int value = rand() % 1000 + 100;
+		m_money.push_back(new Money( m_pContent, value, pos, m_pPlayer, m_levelSpeed));
+		m_timeSinceLastMoney.restart();
+		m_nextMoney = sf::seconds(rand() % 5);
+	}
+
+	std::list<Money*>::iterator mEnd;
+	mEnd = std::remove_if (m_money.begin(), m_money.end(), isDead);
+	m_money.assign(m_money.begin(), mEnd);
+
+	for(Money* cash : m_money)
+	{
+		cash->update(dt);
+	}
 }
 
 Level::~Level()

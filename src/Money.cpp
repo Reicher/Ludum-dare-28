@@ -12,6 +12,7 @@ Money::Money(Content* content,
 , m_position(position)
 , m_pPlayer(player)
 , m_speed(speed)
+, m_dead(false)
 {
 	m_sprite.setTexture(m_pContent->m_money);
 	m_sprite.scale(0.75, 0.75);
@@ -49,5 +50,19 @@ void Money::draw(sf::RenderWindow* window)
 void Money::update(sf::Time dt)
 {
 	m_sprite.move(-m_speed * dt.asSeconds(), 0.0f);
+
+	//check for player
+	if (m_pPlayer->getPosition() == m_position
+			&& m_sprite.getPosition().x < 120
+			&& m_sprite.getPosition().x > -100 )
+	{
+		m_pPlayer->giveMoney(m_value);
+		m_dead = true;
+	}
+}
+
+bool Money::isDead() const
+{
+	return m_dead;
 }
 

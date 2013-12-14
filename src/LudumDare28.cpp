@@ -49,7 +49,7 @@ int main()
         	delete level;
         	levelNr++;
         	level = new Level(&content, levelNr, &player);
-        	infoBox.reset(levelNr, 0);
+        	infoBox.reset(levelNr, player.takeAllMoney());
         }
 
 
