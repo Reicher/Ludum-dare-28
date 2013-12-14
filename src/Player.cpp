@@ -4,6 +4,7 @@
 Player::Player(Content* content)
 : m_pContent(content)
 , m_position(Middle)
+, m_money(0)
 {
 	// Base
     m_spriteBase.setTexture(m_pContent->m_playerBase);
@@ -55,4 +56,17 @@ void Player::setPosition(sf::Vector2<int> pos)
 	m_spriteBase.setPosition(pos.x, pos.y);
 	m_spriteArms.setPosition(pos.x, pos.y);
 	m_spriteLegs.setPosition(pos.x, pos.y);
+}
+
+void Player::giveMoney(unsigned int value)
+{
+	m_money = value;
+}
+
+unsigned int Player::takeAllMoney()
+{
+	unsigned int money = m_money;
+	m_money = 0;
+	return money;
+
 }

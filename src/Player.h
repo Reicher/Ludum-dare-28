@@ -3,15 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
+#include "Enums.h"
+
 class Content;
-
-enum Position
-{
-	Up = 0,
-	Middle,
-	Down
-
-};
 
 class Player
 {
@@ -22,6 +16,9 @@ public:
 	void update();
 	Position getPosition() const;
 
+	void giveMoney(unsigned int value);
+	unsigned int takeAllMoney();
+
 private:
 	void setPosition(sf::Vector2<int> pos);
 
@@ -31,4 +28,6 @@ private:
 
 	Content* m_pContent;
 	Position m_position;
+
+	unsigned int m_money;
 };

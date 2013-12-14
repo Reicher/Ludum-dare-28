@@ -13,6 +13,7 @@ public:
         void loadFonts();
 
         sf::Texture m_startScreen;
+        sf::Texture m_infoScreen;
 
         sf::Texture m_background1;
         sf::Texture m_background2;
@@ -20,6 +21,8 @@ public:
         sf::Texture m_playerBase;
         sf::Texture m_playerArms;
         sf::Texture m_playerLegs;
+
+        sf::Texture m_money;
 
         //sf::SoundBuffer
 

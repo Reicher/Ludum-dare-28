@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "Level.h"
+#include "InfoBox.h"
 
 int main()
 {
@@ -15,7 +16,9 @@ int main()
     sf::Clock clock;
 
     Player player(&content);
-    Level *level = new Level(&content, 1);
+    unsigned short levelNr = 1;
+    Level *level = new Level(&content, levelNr, &player);
+    InfoBox infoBox = InfoBox(&content, levelNr);
 
     // run the program as long as the window is open
     while (window.isOpen())
@@ -30,23 +33,41 @@ int main()
             {
             	window.close();
             }
-
         }
 
         // clear the window with black color
         window.clear(sf::Color::Black);
 
+        // if infobox is gone and game have not started
+        if(!infoBox.isActive() && !level->isStarted() )
+        {
+          	level->start();
+
+        }
+        else if( level->isEnded() )
+        {
+        	delete level;
+        	levelNr++;
+        	level = new Level(&content, levelNr, &player);
+        	infoBox.reset(levelNr, 0);
+        }
+
+
         // update all here
         dt = clock.restart();
 
-        if(level->started())
-        	player.update();
-
-        level->update(dt);
+        if( !level->isStarted() )
+        	infoBox.update();
+        else if(level->isStarted())
+        {
+            level->update(dt);
+            player.update();
+        }
 
         // draw everything here...
         level->draw(&window);
         player.draw(&window);
+    	infoBox.draw(&window);
 
         // end the current frame
         window.display();

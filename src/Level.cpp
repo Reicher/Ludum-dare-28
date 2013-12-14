@@ -2,14 +2,20 @@
 #include "Content.h"
 #include <cstdlib>
 #include <string>
+#include "Player.h"
+#include <iostream>
 
-Level::Level(Content* content, unsigned short level)
+Level::Level(Content* content, unsigned short levelNr, Player* player)
 : m_pContent(content)
-, m_level(level)
-, m_levelSpeed(100.0 + (level * 50))
+, m_levelNr(levelNr)
+, m_levelSpeed(100.0 + (double)(levelNr * 50))
 , m_started(false)
+, m_ended(false)
+, m_levelTime(sf::seconds(10.f))
+, m_nextMoney(sf::seconds(rand() % 5))
+, m_pPlayer(player)
 {
-	m_startScreen.setTexture(m_pContent->m_startScreen);
+	m_timeSinceLastMoney.restart();
 
 	m_background1.setTexture(m_pContent->m_background1);
 	m_background2.setTexture(m_pContent->m_background2);
@@ -26,41 +32,55 @@ void Level::draw(sf::RenderWindow* window)
 	sprite++;
 	window->draw(*sprite);
 
-	//start screen
-	if(!m_started)
+	for(Money* cash : m_money)
 	{
-		window->draw(m_startScreen);
-
-		// Level text
-		sf::Text levelNumber;
-		levelNumber.setFont(m_pContent->m_standardFont);
-		levelNumber.setString("Level: " + std::to_string(m_level));
-		levelNumber.setPosition(200, 170);
-		levelNumber.setColor(sf::Color::Black);
-		levelNumber.setCharacterSize(40); // in pixels, not points!
-
-		window->draw(levelNumber);
+		cash->draw(window);
 	}
 }
 
 void Level::update(sf::Time dt)
 {
+	// before level is started
 	if(!m_started)
 	{
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-			m_started = true;
-
 		return;
 	}
 
+	if (m_levelClock.getElapsedTime() >= m_levelTime)
+		m_ended = true;
+
+	// Adding enemies, money and stuff
+	if(m_timeSinceLastMoney.getElapsedTime() > m_nextMoney)
+	{
+		Position pos = static_cast<Position>(rand() % 2 + 0);
+		unsigned int value = rand() % 1000 + 100;
+		m_money.push_back(new Money( m_pContent, value, pos, m_pPlayer, m_levelSpeed));
+		m_timeSinceLastMoney.restart();
+		m_nextMoney = sf::seconds(rand() % 5);
+	}
+
+	for(Money* cash : m_money)
+	{
+		cash->update(dt);
+	}
+
 	updateBackground(dt);
-
-
 }
 
-bool Level::started() const
+bool Level::isStarted() const
 {
 	return m_started;
+}
+
+void Level::start()
+{
+	m_levelClock.restart();
+	m_started = true;
+}
+
+bool Level::isEnded() const
+{
+	return m_ended;
 }
 
 void Level::updateBackground(sf::Time dt)
@@ -92,4 +112,12 @@ void Level::updateBackground(sf::Time dt)
 	// Remove used sprite
 	if(m_scrollingBackground.begin()->getPosition().x < -800)
 		m_scrollingBackground.pop_front();
+
 }
+
+Level::~Level()
+{
+	m_money.clear();
+	m_scrollingBackground.clear();
+}
+
