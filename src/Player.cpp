@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "Content.h"
 
+#include <iostream>
+
 Player::Player(Content* content)
 : m_pContent(content)
 , m_position(Middle)
@@ -17,6 +19,10 @@ Player::Player(Content* content)
     // Running legs!
     m_spriteLegs.setTexture(m_pContent->m_playerLegs);
     m_spriteLegs.setPosition(0, 300);
+
+    // BAG OF MONEEY
+    m_moneyBag.setTexture(m_pContent->m_money);
+    m_moneyBag.setPosition(90, 350); //kinda
 }
 
 void Player::draw(sf::RenderWindow* window)
@@ -24,6 +30,10 @@ void Player::draw(sf::RenderWindow* window)
 	window->draw(m_spriteBase);
 	window->draw(m_spriteArms);
 	window->draw(m_spriteLegs);
+
+	if(m_money > 0){
+		window->draw(m_moneyBag);
+	}
 }
 
 void Player::update()
@@ -56,17 +66,20 @@ void Player::setPosition(sf::Vector2<int> pos)
 	m_spriteBase.setPosition(pos.x, pos.y);
 	m_spriteArms.setPosition(pos.x, pos.y);
 	m_spriteLegs.setPosition(pos.x, pos.y);
+    m_moneyBag.setPosition(pos.x+20, pos.y+50);
 }
 
 void Player::giveMoney(unsigned int value)
 {
 	m_money = value;
+	m_moneyBag.setScale(m_money * 0.001, m_money * 0.001);
 }
 
 unsigned int Player::takeAllMoney()
 {
 	unsigned int money = m_money;
 	m_money = 0;
+	m_moneyBag.setScale(1.0, 1.0);
 	return money;
 
 }

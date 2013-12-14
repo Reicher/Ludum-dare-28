@@ -26,6 +26,8 @@ private:
 	sf::Sprite m_spriteArms;
 	sf::Sprite m_spriteLegs;
 
+	sf::Sprite m_moneyBag;
+
 	Content* m_pContent;
 	Position m_position;
 

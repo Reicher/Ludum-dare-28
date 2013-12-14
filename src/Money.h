@@ -4,10 +4,10 @@
 #include "Enums.h"
 #include "Content.h"
 #include "Player.h"
+#include "MovingStuff.h"
 
 
-
-class Money
+class Money : public MovingStuff
 {
 public:
 	Money(  Content* content,
@@ -17,21 +17,9 @@ public:
 			int speed);
 
 	unsigned int getValue() const ;
-	Position getPosition() const;
-	void draw(sf::RenderWindow* window);
-	void update(sf::Time dt);
 
-	bool isDead() const;
+	void onContact();
 
 private:
-	Content* m_pContent;
-
-	sf::Sprite m_sprite;
-
 	unsigned int m_value;
-
-	Position m_position;
-	Player* m_pPlayer;
-	double m_speed;
-	bool m_dead;
 };

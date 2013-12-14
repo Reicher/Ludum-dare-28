@@ -109,7 +109,7 @@ void Level::updateMoney(sf::Time dt)
 	if(m_timeSinceLastMoney.getElapsedTime() > m_nextMoney)
 	{
 		Position pos = static_cast<Position>(rand() % 3 + 0);
-		unsigned int value = rand() % 1000 + 100;
+		unsigned int value = rand() % 700 + 300;
 		m_money.push_back(new Money( m_pContent, value, pos, m_pPlayer, m_levelSpeed));
 		m_timeSinceLastMoney.restart();
 		m_nextMoney = sf::seconds(rand() % 5);
