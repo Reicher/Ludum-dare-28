@@ -21,9 +21,7 @@ void Content::loadTextures()
 	m_background1.loadFromFile(DEBUG + "Textures/Background1.png");
 	m_background2.loadFromFile(DEBUG + "Textures/Background2.png");
 
-	m_playerBase.loadFromFile(DEBUG + "Textures/PlayerBase.png");
-	m_playerArms.loadFromFile(DEBUG + "Textures/PlayerArms.png");
-	m_playerLegs.loadFromFile(DEBUG + "Textures/PlayerLegs.png");
+	m_playerBase.loadFromFile(DEBUG + "Textures/Player.png");
 
 	m_money.loadFromFile(DEBUG + "Textures/Money.png");
 	m_rock.loadFromFile(DEBUG + "Textures/Rock.png");

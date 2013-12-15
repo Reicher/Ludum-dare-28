@@ -25,9 +25,7 @@ public:
 private:
 	void setPosition(sf::Vector2<int> pos);
 
-	sf::Sprite m_spriteBase;
-	sf::Sprite m_spriteArms;
-	sf::Sprite m_spriteLegs;
+	sf::Sprite m_player;
 
 	sf::Sprite m_moneyBag;
 
@@ -40,4 +38,8 @@ private:
 	//sounds
 	sf::Sound m_killed;
 	sf::Sound m_gotCash;
+
+	sf::Clock m_animationClock;
+	sf::Time m_updateFreq;
+	int m_animationNr;
 };

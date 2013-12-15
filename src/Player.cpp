@@ -1,8 +1,6 @@
 #include "Player.h"
 #include "Content.h"
 
-#include <iostream>
-
 Player::Player(Content* content)
 : m_pContent(content)
 , m_position(Middle)
@@ -10,30 +8,24 @@ Player::Player(Content* content)
 , m_dead(false)
 , m_killed(content->m_killed)
 , m_gotCash(content->m_gotCash)
+, m_updateFreq(sf::seconds(0.1f))
+, m_animationNr(0)
 {
-	// Base
-    m_spriteBase.setTexture(m_pContent->m_playerBase);
-    m_spriteBase.setPosition(0, 300);
+	m_animationClock.restart();
 
-    // Arms and sword
-    m_spriteArms.setTexture(m_pContent->m_playerArms);
-    m_spriteArms.setPosition(0, 300);
-
-    // Running legs!
-    m_spriteLegs.setTexture(m_pContent->m_playerLegs);
-    m_spriteLegs.setPosition(0, 300);
+	m_player.setTexture(m_pContent->m_playerBase);
+	m_player.setPosition(0, 300);
+	m_player.setTextureRect (sf::IntRect(0, 0, 150, 150));
 
     // BAG OF MONEEY
-    m_moneyBag.setOrigin(75.0, 75.0);
+    m_moneyBag.setOrigin(65.0, 75.0);
     m_moneyBag.setTexture(m_pContent->m_money);
     m_moneyBag.setPosition(90, 350); //kinda
 }
 
 void Player::draw(sf::RenderWindow* window)
 {
-	window->draw(m_spriteBase);
-	window->draw(m_spriteArms);
-	window->draw(m_spriteLegs);
+	window->draw(m_player);
 
 	if(m_money > 0){
 		window->draw(m_moneyBag);
@@ -42,6 +34,20 @@ void Player::draw(sf::RenderWindow* window)
 
 void Player::update()
 {
+	//Player animation
+	if(m_animationClock.getElapsedTime() > m_updateFreq)
+	{
+		m_animationNr++;
+		m_animationNr = m_animationNr % 4;
+
+		sf::Vector2<int> from(m_animationNr*150, 0);
+		sf::Vector2<int> to(m_animationNr+1*150, 150);
+
+		m_player.setTextureRect(sf::IntRect(from.x, from.y, to.x, to.y));
+
+		m_animationClock.restart();
+	}
+
 	// Player movement up/down
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
@@ -67,10 +73,8 @@ Position Player::getPosition() const
 
 void Player::setPosition(sf::Vector2<int> pos)
 {
-	m_spriteBase.setPosition(pos.x, pos.y);
-	m_spriteArms.setPosition(pos.x, pos.y);
-	m_spriteLegs.setPosition(pos.x, pos.y);
-    m_moneyBag.setPosition(pos.x+75.0, pos.y+75.0);
+	m_player.setPosition(pos.x, pos.y);
+    m_moneyBag.setPosition(pos.x+30.0, pos.y+85.0);
 }
 
 void Player::giveMoney(unsigned int value)
@@ -79,6 +83,7 @@ void Player::giveMoney(unsigned int value)
 	m_moneyBag.setScale(m_money * 0.001, m_money * 0.001);
 
 	// money sound
+	m_gotCash.setVolume(value*0.1);
 	if(m_gotCash.getStatus() == sf::SoundSource::Status::Playing)
 		m_gotCash.stop();
 

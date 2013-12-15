@@ -69,19 +69,19 @@ void Level::update(sf::Time dt)
 	if(m_upperTimeSinceLastElement.getElapsedTime() > m_upperTimeUntilNextElement)
 	{
 		m_upperTimeSinceLastElement.restart();
-		m_upperTimeUntilNextElement = sf::seconds(rand() % 5);
+		m_upperTimeUntilNextElement = sf::seconds(((float)(rand() % 50)*0.1f)+1.0f);
 		position = Position::Up;
 	}
 	else if(m_middleTimeSinceLastElement.getElapsedTime() > m_middleTimeUntilNextElement)
 	{
 		m_middleTimeSinceLastElement.restart();
-		m_middleTimeUntilNextElement = sf::seconds(rand() % 5);
+		m_middleTimeUntilNextElement = sf::seconds(((float)(rand() % 50)*0.1f)+1.0f);
 		position = Middle;
 	}
 	else if(m_lowerTimeSinceLastElement.getElapsedTime() > m_lowerTimeUntilNextElement)
 	{
 		m_lowerTimeSinceLastElement.restart();
-		m_lowerTimeUntilNextElement = sf::seconds(rand() % 5);
+		m_lowerTimeUntilNextElement = sf::seconds(((float)(rand() % 50)*0.1f)+1.0f);
 		position = Down;
 	}
 	else

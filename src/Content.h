@@ -20,8 +20,6 @@ public:
         sf::Texture m_background2;
 
         sf::Texture m_playerBase;
-        sf::Texture m_playerArms;
-        sf::Texture m_playerLegs;
 
         sf::Texture m_money;
         sf::Texture m_rock;
