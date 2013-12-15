@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <string>
 #include "Player.h"
-#include <iostream>
 
 Level::Level(Content* content, unsigned short levelNr, Player* player)
 : m_pContent(content)
@@ -16,6 +15,8 @@ Level::Level(Content* content, unsigned short levelNr, Player* player)
 , m_pPlayer(player)
 , m_stonesInARow(0)
 {
+	  /* initialize random seed: */
+	  srand (time(NULL));
 
 	m_moneyRatio = m_moneyRatio < 0.2 ? 0.2 : m_moneyRatio;
 
@@ -23,9 +24,11 @@ Level::Level(Content* content, unsigned short levelNr, Player* player)
 	m_middleTimeSinceLastElement.restart();
 	m_lowerTimeSinceLastElement.restart();
 
-	m_upperTimeUntilNextElement = sf::seconds(rand() % 2);
-	m_middleTimeUntilNextElement = sf::seconds(rand() % 2);
-	m_lowerTimeUntilNextElement = sf::seconds(rand() % 2);
+	int rand_k = 20 / ((double)m_levelNr*0.3);
+
+	m_upperTimeUntilNextElement = sf::seconds((double)(rand() % rand_k) *0.1);
+	m_middleTimeUntilNextElement = sf::seconds((double)(rand() % rand_k) *0.1);
+	m_lowerTimeUntilNextElement = sf::seconds((double)(rand() % rand_k) *0.1);
 
 	m_background1.setTexture(m_pContent->m_background1);
 	m_background2.setTexture(m_pContent->m_background2);
@@ -51,55 +54,17 @@ void Level::draw(sf::RenderWindow* window)
 
 void Level::update(sf::Time dt)
 {
-	// before level is started
+	// do not update if...
 	if(!m_started || m_pPlayer->isDead())
 	{
 		return;
 	}
 
-	if (m_levelClock.getElapsedTime() >= m_levelTime)
+	if (m_levelClock.getElapsedTime() <= m_levelTime)
+		addStuff();
+	else if(m_movingStuff.empty())
 		m_ended = true;
 
-	//adding things to lanes
-	bool addStuff = true;
-	Position position;
-	int rand_k = 20 / ((double)m_levelNr*0.3);
-
-	if(m_upperTimeSinceLastElement.getElapsedTime() > m_upperTimeUntilNextElement)
-	{
-		m_upperTimeSinceLastElement.restart();
-		m_upperTimeUntilNextElement = sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
-		position = Position::Up;
-	}
-	else if(m_middleTimeSinceLastElement.getElapsedTime() > m_middleTimeUntilNextElement)
-	{
-		m_middleTimeSinceLastElement.restart();
-		m_middleTimeUntilNextElement = sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
-		position = Middle;
-	}
-	else if(m_lowerTimeSinceLastElement.getElapsedTime() > m_lowerTimeUntilNextElement)
-	{
-		m_lowerTimeSinceLastElement.restart();
-		m_lowerTimeUntilNextElement =sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
-		position = Down;
-	}
-	else
-		addStuff = false;
-
-	if( addStuff )
-	{
-		if((rand() % 100) < (m_moneyRatio * 100.0))
-		{ //money!
-			unsigned int value = rand() % 700 + 300;
-			m_movingStuff.push_back(new Money( m_pContent, value, position, m_pPlayer, m_levelSpeed));
-			m_stonesInARow = 0;
-		}
-		else if(m_stonesInARow <= 3)// Rocks =/
-		{
-			m_movingStuff.push_back(new Rock( m_pContent, position, m_pPlayer, m_levelSpeed));
-			m_stonesInARow++;
-		}
-	}
 
 	updateBackground(dt);
 	updateMovingStuff(dt);
@@ -167,6 +132,52 @@ void Level::updateMovingStuff(sf::Time dt)
 	{
 		cash->update(dt);
 	}
+}
+
+void Level::addStuff()
+{
+
+	//adding things to lanes
+	bool addStuff = true;
+	Position position;
+	int rand_k = 20 / ((double)m_levelNr*0.3);
+
+	if(m_upperTimeSinceLastElement.getElapsedTime() > m_upperTimeUntilNextElement)
+	{
+		m_upperTimeSinceLastElement.restart();
+		m_upperTimeUntilNextElement = sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
+		position = Position::Up;
+	}
+	else if(m_middleTimeSinceLastElement.getElapsedTime() > m_middleTimeUntilNextElement)
+	{
+		m_middleTimeSinceLastElement.restart();
+		m_middleTimeUntilNextElement = sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
+		position = Middle;
+	}
+	else if(m_lowerTimeSinceLastElement.getElapsedTime() > m_lowerTimeUntilNextElement)
+	{
+		m_lowerTimeSinceLastElement.restart();
+		m_lowerTimeUntilNextElement =sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
+		position = Down;
+	}
+	else
+		addStuff = false;
+
+	if( addStuff )
+	{
+		if((rand() % 100) < (m_moneyRatio * 100.0))
+		{ //money!
+			unsigned int value = rand() % 700 + 300;
+			m_movingStuff.push_back(new Money( m_pContent, value, position, m_pPlayer, m_levelSpeed));
+			m_stonesInARow = 0;
+		}
+		else if(m_stonesInARow <= 3)// Rocks =/
+		{
+			m_movingStuff.push_back(new Rock( m_pContent, position, m_pPlayer, m_levelSpeed));
+			m_stonesInARow++;
+		}
+	}
+
 }
 
 Level::~Level()

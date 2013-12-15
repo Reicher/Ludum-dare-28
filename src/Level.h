@@ -27,6 +27,8 @@ private:
 	void updateBackground(sf::Time dt);
 	void updateMovingStuff(sf::Time dt);
 
+	void addStuff();
+
 	std::list<sf::Sprite> m_scrollingBackground;
 
 	sf::Sprite m_background1;
@@ -38,7 +40,6 @@ private:
 	double m_levelSpeed;
 	double m_moneyRatio;
 	bool m_started, m_ended;
-	int m_stonesInARow;
 
 	sf::Clock m_levelClock;
 	sf::Time m_levelTime;
@@ -59,5 +60,7 @@ private:
 	std::list<MovingStuff*> m_movingStuff;
 
 	Player* m_pPlayer;
+
+	int m_stonesInARow;
 
 };

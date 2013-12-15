@@ -92,8 +92,8 @@ void InfoBox::drawLevelEndInfo(sf::RenderWindow* window)
 	levelText.setString("Level "
 						+ std::to_string(m_level -1)
 						+ " completed!\n"
-						+ "\nScore: " + std::to_string(m_score)
-						+ "\nTotal: " + std::to_string(m_totalScore));
+						+ "\nMoney: " + std::to_string(m_score) + " $"
+						+ "\nTotal: " + std::to_string(m_totalScore) + " $");
 
 	levelText.setPosition(200, 150);
 	levelText.setColor(sf::Color::Black);
@@ -111,10 +111,10 @@ void InfoBox::drawGameOverInfo(sf::RenderWindow* window)
 	levelText.setFont(m_pContent->m_standardFont);
 	levelText.setString("You died on level "
 						+ std::to_string(m_level)
-						+ "\nTotal score: " + std::to_string(m_totalScore)
+						+ "\nTotal useless money: " + std::to_string(m_totalScore) + " $"
 						+ "\n\n(Space to restart)");
 
-	levelText.setPosition(300, 350);
+	levelText.setPosition(250, 350);
 	levelText.setColor(sf::Color::Black);
 	levelText.setCharacterSize(20); // in pixels, not points!
 

@@ -9,7 +9,7 @@
 int main()
 {
     // create the window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Ludum dare #28");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Frenzy forest finances");
     Content content;
 
     sf::Time dt;
