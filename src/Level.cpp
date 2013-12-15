@@ -8,12 +8,13 @@
 Level::Level(Content* content, unsigned short levelNr, Player* player)
 : m_pContent(content)
 , m_levelNr(levelNr)
-, m_levelSpeed(100.0 + (double)(levelNr * 50))
-, m_moneyRatio(1.0 - (levelNr *0.1))
+, m_levelSpeed(130.0 + (double)(levelNr * 50))
+, m_moneyRatio(0.9 - (levelNr *0.1))
 , m_started(false)
 , m_ended(false)
-, m_levelTime(sf::seconds(10.f))
+, m_levelTime(sf::seconds(15.f))
 , m_pPlayer(player)
+, m_stonesInARow(0)
 {
 
 	m_moneyRatio = m_moneyRatio < 0.2 ? 0.2 : m_moneyRatio;
@@ -28,6 +29,7 @@ Level::Level(Content* content, unsigned short levelNr, Player* player)
 
 	m_background1.setTexture(m_pContent->m_background1);
 	m_background2.setTexture(m_pContent->m_background2);
+	m_background3.setTexture(m_pContent->m_background3);
 
 	sf::Sprite newSprite = m_background1;
 	newSprite.setPosition(0, 0);
@@ -41,14 +43,9 @@ void Level::draw(sf::RenderWindow* window)
 	sprite++;
 	window->draw(*sprite);
 
-	for(Money* cash : m_money)
+	for(MovingStuff* stuff : m_movingStuff)
 	{
-		cash->draw(window);
-	}
-
-	for(Rock* rock : m_rocks)
-	{
-		rock->draw(window);
+		stuff->draw(window);
 	}
 }
 
@@ -66,22 +63,24 @@ void Level::update(sf::Time dt)
 	//adding things to lanes
 	bool addStuff = true;
 	Position position;
+	int rand_k = 20 / ((double)m_levelNr*0.3);
+
 	if(m_upperTimeSinceLastElement.getElapsedTime() > m_upperTimeUntilNextElement)
 	{
 		m_upperTimeSinceLastElement.restart();
-		m_upperTimeUntilNextElement = sf::seconds(((float)(rand() % 50)*0.1f)+1.0f);
+		m_upperTimeUntilNextElement = sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
 		position = Position::Up;
 	}
 	else if(m_middleTimeSinceLastElement.getElapsedTime() > m_middleTimeUntilNextElement)
 	{
 		m_middleTimeSinceLastElement.restart();
-		m_middleTimeUntilNextElement = sf::seconds(((float)(rand() % 50)*0.1f)+1.0f);
+		m_middleTimeUntilNextElement = sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
 		position = Middle;
 	}
 	else if(m_lowerTimeSinceLastElement.getElapsedTime() > m_lowerTimeUntilNextElement)
 	{
 		m_lowerTimeSinceLastElement.restart();
-		m_lowerTimeUntilNextElement = sf::seconds(((float)(rand() % 50)*0.1f)+1.0f);
+		m_lowerTimeUntilNextElement =sf::seconds(((double)(rand() % rand_k) *0.1)+1.0);
 		position = Down;
 	}
 	else
@@ -92,15 +91,18 @@ void Level::update(sf::Time dt)
 		if((rand() % 100) < (m_moneyRatio * 100.0))
 		{ //money!
 			unsigned int value = rand() % 700 + 300;
-			m_money.push_back(new Money( m_pContent, value, position, m_pPlayer, m_levelSpeed));
+			m_movingStuff.push_back(new Money( m_pContent, value, position, m_pPlayer, m_levelSpeed));
+			m_stonesInARow = 0;
 		}
-		else // Rocks =/
-			m_rocks.push_back(new Rock( m_pContent, position, m_pPlayer, m_levelSpeed));
+		else if(m_stonesInARow <= 3)// Rocks =/
+		{
+			m_movingStuff.push_back(new Rock( m_pContent, position, m_pPlayer, m_levelSpeed));
+			m_stonesInARow++;
+		}
 	}
 
 	updateBackground(dt);
-	updateMoney(dt);
-	updateRocks(dt);
+	updateMovingStuff(dt);
 }
 
 bool Level::isStarted() const
@@ -124,7 +126,7 @@ void Level::updateBackground(sf::Time dt)
 	// UGLY
 	while(m_scrollingBackground.size() < 2)
 	{
-		int toAdd = rand() % 2 + 1;
+		int toAdd = rand() % 3 + 1;
 		sf::Sprite newSprite;
 		switch(toAdd)
 		{
@@ -134,6 +136,8 @@ void Level::updateBackground(sf::Time dt)
 			case 2:
 				newSprite = m_background2;
 				break;
+			case 3:
+				newSprite = m_background3;
 		}
 		newSprite.setPosition(800, 0);
 		m_scrollingBackground.push_back(newSprite);
@@ -153,33 +157,21 @@ void Level::updateBackground(sf::Time dt)
 
 bool isDead (MovingStuff* m) { return m->isDead(); }
 
-void Level::updateMoney(sf::Time dt)
+void Level::updateMovingStuff(sf::Time dt)
 {
-	std::list<Money*>::iterator mEnd;
-	mEnd = std::remove_if (m_money.begin(), m_money.end(), isDead);
-	m_money.assign(m_money.begin(), mEnd);
+	std::list<MovingStuff*>::iterator mEnd;
+	mEnd = std::remove_if (m_movingStuff.begin(), m_movingStuff.end(), isDead);
+	m_movingStuff.assign(m_movingStuff.begin(), mEnd);
 
-	for(Money* cash : m_money)
+	for(MovingStuff* cash : m_movingStuff)
 	{
 		cash->update(dt);
 	}
 }
 
-void Level::updateRocks(sf::Time dt)
-{
-	std::list<Rock*>::iterator mEnd;
-	mEnd = std::remove_if (m_rocks.begin(), m_rocks.end(), isDead);
-	m_rocks.assign(m_rocks.begin(), mEnd);
-
-	for(Rock* stone : m_rocks)
-	{
-		stone->update(dt);
-	}
-}
 Level::~Level()
 {
-	m_money.clear();
-	m_rocks.clear();
+	m_movingStuff.clear();
 	m_scrollingBackground.clear();
 }
 

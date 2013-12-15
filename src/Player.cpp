@@ -21,11 +21,13 @@ Player::Player(Content* content)
     m_moneyBag.setOrigin(65.0, 75.0);
     m_moneyBag.setTexture(m_pContent->m_money);
     m_moneyBag.setPosition(90, 350); //kinda
+    m_moneyBag.setRotation(-45.0); //kinda
 }
 
 void Player::draw(sf::RenderWindow* window)
 {
-	window->draw(m_player);
+	if(!isDead())
+		window->draw(m_player);
 
 	if(m_money > 0){
 		window->draw(m_moneyBag);

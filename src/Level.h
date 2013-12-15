@@ -1,11 +1,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include <list>
 
 #include "Money.h"
 #include "Rock.h"
+#include "MovingStuff.h"
 
 class Content;
 class Player;
@@ -25,19 +25,20 @@ public:
 
 private:
 	void updateBackground(sf::Time dt);
-	void updateMoney(sf::Time dt);
-	void updateRocks(sf::Time dt);
+	void updateMovingStuff(sf::Time dt);
 
 	std::list<sf::Sprite> m_scrollingBackground;
 
 	sf::Sprite m_background1;
 	sf::Sprite m_background2;
+	sf::Sprite m_background3;
 
 	Content* m_pContent;
 	unsigned short m_levelNr;
 	double m_levelSpeed;
 	double m_moneyRatio;
 	bool m_started, m_ended;
+	int m_stonesInARow;
 
 	sf::Clock m_levelClock;
 	sf::Time m_levelTime;
@@ -55,10 +56,7 @@ private:
 	sf::Time m_lowerTimeUntilNextElement;
 
 	//Money
-	std::list<Money*> m_money;
-
-	//Rocks
-	std::list<Rock*> m_rocks;
+	std::list<MovingStuff*> m_movingStuff;
 
 	Player* m_pPlayer;
 

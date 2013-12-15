@@ -18,6 +18,7 @@ public:
 
         sf::Texture m_background1;
         sf::Texture m_background2;
+        sf::Texture m_background3;
 
         sf::Texture m_playerBase;
 
