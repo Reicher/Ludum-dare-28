@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Enums.h"
 #include "Content.h"
 #include "Player.h"
 #include "MovingStuff.h"

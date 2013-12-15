@@ -16,6 +16,7 @@ void Content::loadTextures()
 {
 	m_startScreen.loadFromFile(DEBUG + "Textures/StartScreen.png");
 	m_infoScreen.loadFromFile(DEBUG + "Textures/InfoScreen.png");
+	m_gameOverScreen.loadFromFile(DEBUG + "Textures/GameOverScreen.png");
 
 	m_background1.loadFromFile(DEBUG + "Textures/Background1.png");
 	m_background2.loadFromFile(DEBUG + "Textures/Background2.png");
@@ -25,6 +26,7 @@ void Content::loadTextures()
 	m_playerLegs.loadFromFile(DEBUG + "Textures/PlayerLegs.png");
 
 	m_money.loadFromFile(DEBUG + "Textures/Money.png");
+	m_rock.loadFromFile(DEBUG + "Textures/Rock.png");
 
 	//.setSmooth(true);
 
@@ -32,12 +34,17 @@ void Content::loadTextures()
 
 void Content::loadSounds()
 {
-	//.loadFromFile("../Sounds/.wav");
+    m_killed.loadFromFile(DEBUG + "Sounds/Stone1.wav");
+    m_gotCash.loadFromFile(DEBUG + "Sounds/Money1.wav");
 }
 
 void Content::loadMusic()
 {
-	//.openFromFile("../Music/.wav");
+	m_music.openFromFile(DEBUG + "Music/Music.wav");
+    m_music.setLoop(true);
+    m_music.setVolume(50);
+
+
 }
 
 void Content::loadFonts()

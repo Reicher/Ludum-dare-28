@@ -16,6 +16,7 @@ Money::Money(Content* content,
 
 void Money::onContact()
 {
+	m_dead = true;
 	m_pPlayer->giveMoney(m_value);
 }
 

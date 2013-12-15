@@ -26,4 +26,5 @@ protected:
 	Player* m_pPlayer;
 	double m_speed;
 	bool m_dead;
+	double m_offset;
 };

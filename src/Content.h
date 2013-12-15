@@ -14,6 +14,7 @@ public:
 
         sf::Texture m_startScreen;
         sf::Texture m_infoScreen;
+        sf::Texture m_gameOverScreen;
 
         sf::Texture m_background1;
         sf::Texture m_background2;
@@ -23,10 +24,12 @@ public:
         sf::Texture m_playerLegs;
 
         sf::Texture m_money;
+        sf::Texture m_rock;
 
-        //sf::SoundBuffer
+        sf::SoundBuffer m_killed;
+        sf::SoundBuffer m_gotCash;
 
-        //sf::Music
+        sf::Music m_music;
 
         sf::Font m_standardFont;
 };

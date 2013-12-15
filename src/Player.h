@@ -15,6 +15,9 @@ public:
 	void draw(sf::RenderWindow* window);
 	void update();
 	Position getPosition() const;
+	bool isDead();
+	void kill();
+	void resurect();
 
 	void giveMoney(unsigned int value);
 	unsigned int takeAllMoney();
@@ -32,4 +35,9 @@ private:
 	Position m_position;
 
 	unsigned int m_money;
+	bool m_dead;
+
+	//sounds
+	sf::Sound m_killed;
+	sf::Sound m_gotCash;
 };

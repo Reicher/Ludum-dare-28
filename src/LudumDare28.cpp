@@ -20,6 +20,9 @@ int main()
     Level *level = new Level(&content, levelNr, &player);
     InfoBox infoBox = InfoBox(&content, levelNr);
 
+    // background music
+    content.m_music.play();
+
     // run the program as long as the window is open
     while (window.isOpen())
     {
@@ -37,6 +40,15 @@ int main()
 
         // clear the window with black color
         window.clear(sf::Color::Black);
+
+        if(player.isDead())
+        {
+        	infoBox.gameOverMan();
+        	levelNr = 1;
+        	delete level;
+        	level = new Level(&content, levelNr, &player);
+        	player.resurect();
+        }
 
         // if infobox is gone and game have not started
         if(!infoBox.isActive() && !level->isStarted() )

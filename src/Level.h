@@ -5,6 +5,7 @@
 #include <list>
 
 #include "Money.h"
+#include "Rock.h"
 
 class Content;
 class Player;
@@ -25,6 +26,7 @@ public:
 private:
 	void updateBackground(sf::Time dt);
 	void updateMoney(sf::Time dt);
+	void updateRocks(sf::Time dt);
 
 	std::list<sf::Sprite> m_scrollingBackground;
 
@@ -34,15 +36,29 @@ private:
 	Content* m_pContent;
 	unsigned short m_levelNr;
 	double m_levelSpeed;
+	double m_moneyRatio;
 	bool m_started, m_ended;
 
 	sf::Clock m_levelClock;
 	sf::Time m_levelTime;
 
+	// upper lane
+	sf::Clock m_upperTimeSinceLastElement;
+	sf::Time m_upperTimeUntilNextElement;
+
+	//middle lane
+	sf::Clock m_middleTimeSinceLastElement;
+	sf::Time m_middleTimeUntilNextElement;
+
+	//lower lane
+	sf::Clock m_lowerTimeSinceLastElement;
+	sf::Time m_lowerTimeUntilNextElement;
+
 	//Money
 	std::list<Money*> m_money;
-	sf::Clock m_timeSinceLastMoney;
-	sf::Time m_nextMoney;
+
+	//Rocks
+	std::list<Rock*> m_rocks;
 
 	Player* m_pPlayer;
 
